@@ -1,4 +1,29 @@
 const apiKey = "f00c38e0279b7bc85480c3fe775d518c";
+
+ // Function to update recently searched cities in local storage
+ function updateRecentSearches(city) {
+    let searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
+    if (!searches.includes(city)) {
+        searches.push(city);
+        localStorage.setItem("recentSearches", JSON.stringify(searches));
+    }
+    renderRecentSearches();
+}
+
+// Function to render the recently searched cities dropdown
+function renderRecentSearches() {
+    let searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
+    const dropdown = document.getElementById("recentSearches");
+    const container = document.getElementById("recentSearchesContainer");
+    
+    if (searches.length > 0) {
+        container.classList.remove("hidden");
+        dropdown.innerHTML = `<option value="">Select a city</option>` + searches.map(city => `<option value="${city}">${city}</option>`).join('');
+    } else {
+        container.classList.add("hidden");
+    }
+}
+
 // Function to fetch weather data based on city name
 async function fetchWeather(city) {
   if (!city) city = document.getElementById("cityInput").value;
@@ -61,3 +86,5 @@ async function fetchWeatherByCoords(lat, lon) {
   fetchWeather(data.city.name);// Use city name obtained from coordinates to fetch weather
 }
 
+ // Render recently searched cities when the page loads
+ document.addEventListener("DOMContentLoaded", renderRecentSearches);
